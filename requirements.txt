@@ -1,0 +1,14 @@
+pytorch-lightning
+nemo
+hydra-core
+python-telegram-bot
+librosa
+transformers
+sentencepiece
+pandas
+Cython
+youtokentome
+inflect
+editdistance
+lhotse
+telebot
