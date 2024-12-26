@@ -1,33 +1,50 @@
 import argparse
 import telebot
+import yaml
 import nemo.collections.asr as nemo_asr
 from pydub import AudioSegment
 import os
 from datetime import datetime
 
-def load_asr_model(model_path):
-    return nemo_asr.models.EncDecHybridRNNTCTCBPEModel.restore_from(model_path)
+# Load configuration
+config_dir = 'config'
+config_path = os.path.join(config_dir, 'config.yaml')
+
+with open(config_path, 'r') as file:
+    config = yaml.safe_load(file)
+
+def load_asr_model(model_path=None, hf_model_name=None):
+    if model_path and os.path.exists(model_path):
+        return nemo_asr.models.EncDecHybridRNNTCTCBPEModel.restore_from(model_path)
+    elif hf_model_name:
+        return nemo_asr.models.EncDecHybridRNNTCTCBPEModel.from_pretrained(model_name=hf_model_name)
+    else:
+        raise ValueError("Neither model path nor HF model name provided.")
 
 # Initialize parser and add arguments
 parser = argparse.ArgumentParser(description='Telegram Bot for ASR using a NeMo model.')
 parser.add_argument(
-    'model_path', 
+    '--model_path', 
     type=str, 
     help='The file path to the NeMo ASR model.', 
-    nargs='?', 
-    default='/home/aayrapetyan/Desktop/armenian_training/models/slim_mcv_tol_girq__you/FastConformer-Hybrid-Transducer-CTC-BPE.nemo'
+    default=config.get('model_path')
 )
 parser.add_argument(
-    'token', 
+    '--hf_model_name', 
+    type=str, 
+    help='The Hugging Face model name.', 
+    default=config.get('hf_model_name')
+)
+parser.add_argument(
+    '--token', 
     type=str, 
     help='The Telegram bot token.', 
-    nargs='?', 
-    default='6912088782:AAGSXJpyk1Sim4iy6ZsfJLkCQ5OL4UHMuuY'
+    default=config.get('telegram_token')
 )
 args = parser.parse_args()
 
 # Load ASR model
-asr_model = load_asr_model(args.model_path)
+asr_model = load_asr_model(model_path=args.model_path, hf_model_name=args.hf_model_name)
 
 # Initialize bot with the given token
 bot = telebot.TeleBot(args.token)
@@ -65,6 +82,9 @@ def handle_voice(message):
     # Convert OGG to WAV
     audio = AudioSegment.from_ogg(ogg_path)
     audio.export(wav_path, format='wav')
+
+    # Delete the original OGG file
+    os.remove(ogg_path)
 
     # Transcribe the WAV file using the specified model
     transcription = asr_model.transcribe([wav_path])[0][0]
