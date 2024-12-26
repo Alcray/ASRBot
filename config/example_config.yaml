@@ -1,0 +1,8 @@
+# Path to the local model file. This will be used first if it exists.
+model_path: '/path/to/alternate/model/if/needed.nemo'
+
+# Name of the Hugging Face model to fall back on if the local model is not available.
+hf_model_name: 'nvidia/stt_hy_fastconformer_hybrid_large_pc'
+
+# Token for the Telegram bot to interact with your work PC.
+telegram_token: 'your_bot_token'

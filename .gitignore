@@ -1,0 +1,11 @@
+# Ignore everything in the config directory except config.yaml
+config/*
+!config/example_config.yaml
+
+# Ignore workspace directory
+workspace/
+
+# Ignore other temporary or log files
+*.log
+*.pyc
+__pycache__/
