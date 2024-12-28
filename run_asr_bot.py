@@ -8,7 +8,7 @@ from datetime import datetime
 
 # Load configuration
 config_dir = 'config'
-config_path = os.path.join(config_dir, 'config.yaml')
+config_path = os.path.join(config_dir, 'workpc_config.yaml')
 
 with open(config_path, 'r') as file:
     config = yaml.safe_load(file)
