@@ -3,7 +3,7 @@ config/*
 !config/example_config.yaml
 
 # Ignore workspace directory
-workspace/
+workspace/*
 
 # Ignore other temporary or log files
 *.log

@@ -9,23 +9,6 @@ This repository contains a Python script for a Telegram bot that uses NVIDIA's N
   - Converts `.ogg` voice messages to `.wav` format for transcription.
   - Deletes temporary `.ogg` files after processing.
 
-## Prerequisites
-### 1. Docker Environment
-To ensure all dependencies are met, start a Docker environment:
-
-```bash
-docker run --gpus all -it -v /home:/home -v /mnt/data:/mnt/data --shm-size=8g \
--p 8888:8888 -p 6006:6006 --ulimit memlock=-1 --ulimit \
-stack=67108864 --device=/dev/snd --name nemodockergpu nvcr.io/nvidia/nemo:24.09
-```
-
-### 2. Install Required Python Packages
-After starting the Docker container, install the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
 ## Configuration
 The bot requires a configuration file in the `config/` directory. Use `config.yaml` as the default configuration file. Below is an example configuration:
 
@@ -46,33 +29,26 @@ telegram_token: 'your_bot_token'
 - Replace `your_bot_token` with the Telegram bot token.
 - If you want to use a different configuration file (e.g., for another environment), create it in the `config/` directory and update the `config_path` in the script accordingly.
 
-### `.gitignore`
-To ensure sensitive information is not committed:
+## How to Run the Bot
 
-```bash
-# Ignore sensitive configuration files
-config/workpc_config.yaml
+### **Running with `run.sh`**
+1. Use the `run.sh` script to automatically set up the Docker environment, build the Docker image, and start the container:
+   ```bash
+   ./run.sh
+   ```
+   This script will:
+   - Build the Docker image.
+   - Stop and remove any existing containers with the same name.
+   - Start a new container for the bot.
 
-# Ignore workspace directory
-workspace/
+2. Monitor the logs to ensure the bot is running:
+   ```bash
+   docker logs -f armenian-asr-bot
+   ```
 
-# Ignore Python virtual environment
-asrdemo/
-
-# Ignore other temporary or log files
-*.log
-*.pyc
-__pycache__/
-```
-
-## How to Run
-1. Ensure the Docker environment is running.
-2. Verify the configuration file (`config/config.yaml`) is correctly set up.
-3. Start the bot using the following command:
-
-```bash
-python ArmenianASRbot.py
-```
+3. Interact with the bot via Telegram:
+   - Send `/start` to the bot.
+   - Send a voice message, and the bot will transcribe it.
 
 ## Functionality
 - **Starting the Bot**:
